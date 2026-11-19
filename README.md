@@ -1,3 +1,4 @@
+Well this is my first vibe coded app ever many bugs will be there but i am happy with i learnt the way to do it
 # 🐾 PawHelp - Stray Animal Rescue Network
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
