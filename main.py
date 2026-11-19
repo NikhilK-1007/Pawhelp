@@ -78,15 +78,22 @@ def darker(color, factor=0.88):
     return (r * factor, g * factor, b * factor, a)
 
 
+def sanitize_markup(text):
+    """Sanitize text to prevent Kivy markup injection (bracket escapement)."""
+    if not text:
+        return ""
+    return str(text).replace("[", "(").replace("]", ")")
+
+
 # ---------------------------------------------------------------- database
 def load_db_config():
-    """Load MySQL connection config from db_config.json or use defaults."""
+    """Load MySQL connection config from environment variables, db_config.json, or safe defaults."""
     default_config = {
-        "host": "localhost",
-        "port": 3306,
-        "user": "root",
-        "password": "",
-        "database": "pawhelp_db"
+        "host": os.environ.get("PAWHELP_DB_HOST", os.environ.get("DB_HOST", "localhost")),
+        "port": int(os.environ.get("PAWHELP_DB_PORT", os.environ.get("DB_PORT", 3306))),
+        "user": os.environ.get("PAWHELP_DB_USER", os.environ.get("DB_USER", "root")),
+        "password": os.environ.get("PAWHELP_DB_PASSWORD", os.environ.get("DB_PASSWORD", "")),
+        "database": os.environ.get("PAWHELP_DB_NAME", os.environ.get("DB_NAME", "pawhelp_db"))
     }
     cfg_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "db_config.json")
     if os.path.isfile(cfg_path):
@@ -94,7 +101,11 @@ def load_db_config():
             with open(cfg_path, "r", encoding="utf-8") as fh:
                 loaded = json.load(fh)
                 if isinstance(loaded, dict):
-                    default_config.update(loaded)
+                    for k, v in loaded.items():
+                        env_key = f"PAWHELP_DB_{k.upper()}"
+                        alt_env = f"DB_{k.upper()}"
+                        if env_key not in os.environ and alt_env not in os.environ:
+                            default_config[k] = v
         except Exception as ex:
             print("Could not read db_config.json:", ex)
     return default_config
@@ -1153,10 +1164,10 @@ class ReportScreen(Screen):
             return
 
         report = {
-            "animal_type": animal,
-            "problem": problem,
-            "description": description,
-            "location": location,
+            "animal_type": sanitize_markup(animal),
+            "problem": sanitize_markup(problem),
+            "description": sanitize_markup(description),
+            "location": sanitize_markup(location),
             "latitude": self.location_coords[0] if self.location_coords else None,
             "longitude": self.location_coords[1] if self.location_coords else None,
             "maps_url": (

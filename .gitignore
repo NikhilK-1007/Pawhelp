@@ -18,6 +18,9 @@ bin/
 # Local user configurations & test logs
 *.log
 .system_generated/
+db_config.json
+.env
+.env.*
 
 # OS files
 .DS_Store
