@@ -61,6 +61,9 @@ android.archs = arm64-v8a, armeabi-v7a
 # (bool) enables Android auto backup feature (Android API >=23)
 android.allow_backup = True
 
+# (str) python-for-android branch to use (pins to stable Python 3.11 release)
+p4a.branch = v2024.01.21
+
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug with command output)

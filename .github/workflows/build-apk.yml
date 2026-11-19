@@ -38,9 +38,9 @@ jobs:
           path: |
             ~/.buildozer
             .buildozer
-          key: buildozer-ubuntu22-${{ hashFiles('buildozer.spec') }}
+          key: buildozer-p4a-v2024-${{ hashFiles('buildozer.spec') }}
           restore-keys: |
-            buildozer-ubuntu22-
+            buildozer-p4a-v2024-
 
       - name: Install Buildozer and Cython
         run: |
